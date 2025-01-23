@@ -25,6 +25,23 @@ public class GameContactListener implements ContactListener {
    @Override
    public void beginContact(Contact contact) {
       // TODO Auto-generated method stub
+      Fixture a = contact.getFixtureA();
+      Fixture b = contact.getFixtureB();
+
+      if (a == null || b == null || a.getUserData() == null || b.getUserData() == null) {
+         return;
+      }
+
+      // Check if the ball is involved in the contact
+      if (ballContact(a, b)) {
+         Ball ball = this.gameScreen.getBall();
+
+         // Trigger color change on contact with paddle or wall
+         if (playerContact(a, b) || aiContact(a, b) || wallContact(a, b)) {
+            ball.changeColor();
+         }
+      }
+
    }
 
    @Override
@@ -75,4 +92,7 @@ public class GameContactListener implements ContactListener {
    private boolean aiContact(Fixture a, Fixture b) {
       return a.getUserData() == ContactType.AI || b.getUserData() == ContactType.AI;
    }
+
+   private boolean wallContact(Fixture a, Fixture b) {
+      return a.getUserData() == ContactType.WALL || b.getUserData() == ContactType.WALL;
 }
